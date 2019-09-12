@@ -1,8 +1,14 @@
 package com.zjj.bt.dht.krpc;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
 
 import com.zjj.bt.bencode.Bencoder;
 import com.zjj.bt.dht.Node;
@@ -18,10 +24,24 @@ import com.zjj.bt.utils.BtUtils;
  */
 public class KrpcClient {
 	private static AtomicInteger atomicInteger;
+	private static List<Token> tokens;
+	private static Map<String, KrpcRequest> requestMap;
 	static {
 		atomicInteger=new AtomicInteger(0);
+		tokens=new ArrayList<Token>();
+		requestMap=new HashMap<String, KrpcRequest>();
 	}
-	public static String ping(Node node) {
+	private static boolean token_lock=false;
+	
+	public static List<Token> getTokens() {
+		return tokens;
+	}
+	
+	public static Map<String, KrpcRequest> getRequestMap(){
+		return requestMap;
+	}
+	
+	public String ping(Node node) {
 		Map<String,Object> ping=new TreeMap<>();
 		
 		checkId();
@@ -36,7 +56,7 @@ public class KrpcClient {
 		String message=Bencoder.geEncoder().encode(ping);
 		return message;
 	}
-	public static String find_node(Node node,Node target) {
+	public String find_node(Node node,Node target) {
 		Map<String,Object> find_node=new TreeMap<String, Object>();
 		
 		
@@ -53,7 +73,7 @@ public class KrpcClient {
 		String message=Bencoder.geEncoder().encode(find_node);
 		return message;
 	}
-	public static String get_peers(Node node,byte[] info_hash) {
+	public String get_peers(Node node,byte[] info_hash) {
 		Map<String,Object> get_peers=new TreeMap<String, Object>();
 		
 		checkId();
@@ -69,11 +89,11 @@ public class KrpcClient {
 		return message;
 	}
 	
-	public static String announce_peers(Node node,byte[] info_hash) {
+	public String announce_peers(Node node,byte[] info_hash) {
 		return announce_peers(node,info_hash,true);
 	}
 	
-	public static String announce_peers(Node node,byte[] info_hash,boolean implied_port) {
+	public String announce_peers(Node node,byte[] info_hash,boolean implied_port) {
 		
 		Map<String,Object> announce_peers=new TreeMap<String, Object>();
 		
@@ -95,7 +115,27 @@ public class KrpcClient {
 		String message=Bencoder.geEncoder().encode(announce_peers);
 		return message;
 	}
-	private static void checkId() {
+	
+	
+	private void checkId() {
 		atomicInteger.compareAndSet(65535, 0);//2^16
+	}
+	private void chekcToken() {
+		if(!token_lock) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					long valid;
+					Token token;
+					for(int i=0;i<tokens.size();i++) {
+						token=tokens.get(i);
+						if(token==null || (valid=token.getInvalid_data())<1 || valid<System.currentTimeMillis()) {
+							tokens.remove(i);
+						}
+					}
+					token_lock=false;
+				}
+			}).start();;
+		}
 	}
 }

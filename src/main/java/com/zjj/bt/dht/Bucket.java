@@ -13,7 +13,7 @@ import java.util.List;
  *@Date 2019年9月9日
  *@Version 1.0
  */
-public class Bucket<E extends BucketCheck> extends ArrayList<E> implements List<E>{
+public class Bucket<E extends AbstractBucket> extends ArrayList<E> implements List<E>{
 	private static final long serialVersionUID = 1L;
 	private int k=8;
 	private int size=0;

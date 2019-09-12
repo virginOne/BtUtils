@@ -44,9 +44,15 @@ public class Test {
 		
 		//socket test
 //		Socket socket=new Socket("67.215.246.10",)
-		System.out.println(Double.MAX_VALUE+3E200);
-		System.out.println(Double.MAX_VALUE+3E20==Double.MAX_VALUE);
-		System.out.println(Double.MAX_VALUE);
+//		System.out.println(Double.MAX_VALUE+3E200);
+//		System.out.println(Double.MAX_VALUE+3E20==Double.MAX_VALUE);
+//		System.out.println(Double.MAX_VALUE);
+		String s="ping";
+		switch (s) {
+		case "ping":System.out.println("123");break;
+		default:System.out.println("error");
+			break;
+		}
 	}
 
 }

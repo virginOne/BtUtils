@@ -8,6 +8,8 @@ package com.zjj.bt.dht;
  *@Date 2019年9月9日
  *@Version 1.0
  */
-public interface BucketCheck {
-	public boolean check();
+public abstract class AbstractBucket {
+	public boolean check() {
+		return true;
+	}
 }

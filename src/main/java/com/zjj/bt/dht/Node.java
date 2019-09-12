@@ -10,7 +10,7 @@ import java.util.Date;
  *@Date 2019年9月6日
  *@Version 1.0
  */
-public class Node implements BucketCheck{
+public class Node extends AbstractBucket{
 	private byte[] nodeId;
 	private String ip;
 	private int port;
@@ -46,7 +46,6 @@ public class Node implements BucketCheck{
 	public void setUpdate_date(Date update_date) {
 		this.update_date = update_date;
 	}
-	@Override
 	public boolean check() {
 		return false;
 	}
