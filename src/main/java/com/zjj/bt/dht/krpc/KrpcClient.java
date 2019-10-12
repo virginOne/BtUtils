@@ -66,8 +66,8 @@ public class KrpcClient {
 		find_node.put("y","q");
 		find_node.put("q", "find_node");
 		Map<String,Object> a=new TreeMap<>();
-		a.put("id", BtUtils.toHexString(node.getNodeId()));
-		a.put("target", BtUtils.toHexString(target.getNodeId()));
+		a.put("id", node.getNodeId());
+		a.put("target", target.getNodeId());
 		find_node.put("a", a);
 		
 		String message=Bencoder.geEncoder().encode(find_node);
